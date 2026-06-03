@@ -1,0 +1,12 @@
+name       = "grenadier-signup-proxy"
+main       = "worker.js"
+compatibility_date = "2025-01-01"
+
+# Route: all traffic to log.yourdomain.com goes through this worker
+# Replace yourdomain.com with your actual domain in Cloudflare
+[[routes]]
+pattern = "log.yourdomain.com/*"
+zone_name = "yourdomain.com"
+
+# Secret (set via CLI — never put the real token here):
+#   wrangler secret put BETTERSTACK_TOKEN

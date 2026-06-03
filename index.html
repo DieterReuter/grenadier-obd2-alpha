@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alpha Testers – Grenadier OBD2 iOS App</title>
+  <meta name="description" content="Sign up to alpha-test the Grenadier OBD2 iOS app. Receive your TestFlight invite and WhatsApp group link by email.">
+  <link rel="icon" type="image/png" href="assets/AppIcon-1024.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:      #1A4FA0;
+      --blue-dark: #163f82;
+      --orange:    #C4601A;
+      --bg:        #f7f6f3;
+      --surface:   #ffffff;
+      --border:    rgba(0,0,0,.10);
+      --text:      #1a1917;
+      --muted:     #5a5854;
+      --hint:      #8a8782;
+      --danger:    #c0392b;
+      --success:   #1A4FA0;
+      --radius:    8px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:      #141311;
+        --surface: #1e1c1a;
+        --border:  rgba(255,255,255,.10);
+        --text:    #f0ede8;
+        --muted:   #a09d98;
+        --hint:    #6a6764;
+      }
+    }
+
+    body {
+      font-family: 'Barlow', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 2rem 2rem 2.25rem;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.07);
+    }
+
+    /* ── Header ── */
+    .header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: .75rem;
+    }
+
+    .eyebrow {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--hint);
+      margin-bottom: 5px;
+    }
+
+    .app-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 30px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.05;
+      letter-spacing: -.01em;
+    }
+
+    .app-sub {
+      font-size: 13.5px;
+      color: var(--muted);
+      margin-top: 6px;
+      line-height: 1.55;
+    }
+
+    .app-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 16px;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 10px rgba(0,0,0,.13);
+    }
+
+    .app-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ── Accent rule ── */
+    .accent-rule {
+      height: 2px;
+      background: linear-gradient(90deg, var(--orange) 0%, var(--blue) 55%, transparent 100%);
+      border-radius: 2px;
+      margin: 1.25rem 0 1.75rem;
+    }
+
+    /* ── Form ── */
+    .field { margin-bottom: 1.1rem; }
+
+    .name-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 10px 12px;
+      font-family: 'Barlow', sans-serif;
+      font-size: 15px;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+      -webkit-appearance: none;
+    }
+
+    input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(26,79,160,.12);
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--hint);
+      margin-top: 5px;
+      line-height: 1.5;
+    }
+
+    .field-error {
+      font-size: 11.5px;
+      color: var(--danger);
+      margin-top: 4px;
+      display: none;
+    }
+
+    .field.has-error input { border-color: var(--danger) !important; }
+    .field.has-error .field-error { display: block; }
+    .field.is-valid input { border-color: var(--blue); }
+
+    /* ── Submit ── */
+    .submit-btn {
+      width: 100%;
+      margin-top: 1.5rem;
+      padding: 12px 16px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #fff;
+      background: var(--blue);
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background .15s, transform .1s;
+    }
+
+    .submit-btn:hover  { background: var(--blue-dark); }
+    .submit-btn:active { transform: scale(.98); }
+    .submit-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    .status-msg {
+      font-size: 12.5px;
+      margin-top: 10px;
+      padding: 9px 12px;
+      border-radius: var(--radius);
+      display: none;
+    }
+    .status-msg.sending { display: block; background: #e8f0fb; color: var(--blue); }
+    .status-msg.fail    { display: block; background: #fdecea; color: var(--danger); }
+
+    /* ── Success ── */
+    .success-view {
+      display: none;
+      text-align: center;
+      padding: 2rem .5rem 1rem;
+    }
+
+    .success-icon {
+      width: 60px; height: 60px;
+      border-radius: 50%;
+      background: var(--blue);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.1rem;
+    }
+
+    .success-icon svg { width: 26px; height: 26px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+    .success-name {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 24px; font-weight: 700;
+      color: var(--text);
+      margin-bottom: .5rem;
+    }
+
+    .success-msg {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .success-email {
+      font-size: 12px;
+      color: var(--hint);
+      margin-top: .75rem;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+
+  <div class="header">
+    <div>
+      <div class="eyebrow">Ineos Grenadier · OBD2 iOS App</div>
+      <div class="app-title">Alpha Testers</div>
+      <p class="app-sub">Sign up to receive your TestFlight invite and WhatsApp group link by email.</p>
+    </div>
+    <div class="app-icon">
+      <img src="assets/AppIcon-1024.png" alt="Grenadier OBD2 app icon">
+    </div>
+  </div>
+
+  <div class="accent-rule"></div>
+
+  <div id="form-view">
+    <div class="field" id="f-name">
+      <div class="name-row">
+        <div>
+          <label for="first-name">First name</label>
+          <input type="text" id="first-name" placeholder="Anna" autocomplete="given-name">
+          <div class="field-error">Required.</div>
+        </div>
+        <div>
+          <label for="last-name">Last name</label>
+          <input type="text" id="last-name" placeholder="Müller" autocomplete="family-name">
+          <div class="field-error">Required.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field" id="f-email">
+      <label for="email">Email address</label>
+      <input type="email" id="email" placeholder="anna@example.com" autocomplete="email">
+      <p class="hint">Your TestFlight invite and WhatsApp group link will be sent here.</p>
+      <div class="field-error">Please enter a valid email address.</div>
+    </div>
+
+    <button class="submit-btn" id="submit-btn" onclick="handleSubmit()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      Register as alpha tester
+    </button>
+    <div class="status-msg" id="status-msg"></div>
+  </div>
+
+  <div class="success-view" id="success-view">
+    <div class="success-icon">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <p class="success-name" id="success-name"></p>
+    <p class="success-msg">You're on the list! Check your inbox for your TestFlight invite and WhatsApp group link.</p>
+    <p class="success-email" id="success-email"></p>
+  </div>
+
+</div>
+
+<script>
+  const WORKER_URL = 'https://log.yourdomain.com'; // ← replace with your CF Worker URL
+
+  function setState(id, state) {
+    const f = document.getElementById(id);
+    f.classList.remove('has-error', 'is-valid');
+    if (state === 'error') f.classList.add('has-error');
+    if (state === 'valid') f.classList.add('is-valid');
+  }
+
+  async function handleSubmit() {
+    const first = document.getElementById('first-name').value.trim();
+    const last  = document.getElementById('last-name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    let ok = true;
+
+    if (!first || !last) { setState('f-name', 'error'); ok = false; } else setState('f-name', 'valid');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { setState('f-email', 'error'); ok = false; } else setState('f-email', 'valid');
+    if (!ok) return;
+
+    const btn = document.getElementById('submit-btn');
+    const sm  = document.getElementById('status-msg');
+    btn.disabled = true;
+    sm.className = 'status-msg sending';
+    sm.textContent = 'Sending…';
+
+    const payload = {
+      message:      'alpha_tester_signup',
+      level:        'info',
+      first_name:   first,
+      last_name:    last,
+      email:        email,
+      submitted_at: new Date().toISOString()
+    };
+
+    try {
+      const res = await fetch(WORKER_URL, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(payload)
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+    } catch (e) {
+      btn.disabled = false;
+      sm.className = 'status-msg fail';
+      sm.textContent = 'Something went wrong — please try again.';
+      return;
+    }
+
+    sm.style.display = 'none';
+    document.getElementById('success-name').textContent = 'Welcome, ' + first + ' ' + last + '!';
+    document.getElementById('success-email').textContent = email;
+    document.getElementById('form-view').style.display  = 'none';
+    document.getElementById('success-view').style.display = 'block';
+  }
+</script>
+</body>
+</html>
