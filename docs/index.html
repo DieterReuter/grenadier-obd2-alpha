@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alpha – Grenadier OBD2</title>
+  <title>Alpha Testers – Grenadier OBD2</title>
   <meta name="description" content="Sign up to alpha-test the Grenadier OBD2 iOS app. Receive your TestFlight invite and WhatsApp group link by email.">
   <link rel="icon" type="image/png" href="assets/AppIcon-1024.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,7 +48,6 @@
       padding: 2rem 1rem;
     }
 
-    /* Desktop: wide card */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -59,23 +58,14 @@
       box-shadow: 0 4px 32px rgba(0,0,0,.07);
     }
 
-    /* Mobile: full screen */
     @media (max-width: 600px) {
-      body {
-        align-items: flex-start;
-        padding: 0;
-      }
+      body { align-items: flex-start; padding: 0; }
       .card {
-        border-radius: 0;
-        border: none;
-        box-shadow: none;
-        min-height: 100dvh;
-        padding: 2.25rem 1.5rem 2.5rem;
-        max-width: 100%;
+        border-radius: 0; border: none; box-shadow: none;
+        min-height: 100dvh; padding: 2.25rem 1.5rem 2.5rem; max-width: 100%;
       }
     }
 
-    /* Header */
     .header {
       display: flex;
       align-items: flex-start;
@@ -86,29 +76,18 @@
 
     .eyebrow {
       font-family: 'Barlow Condensed', sans-serif;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: .12em;
-      text-transform: uppercase;
-      color: var(--hint);
-      margin-bottom: 6px;
+      font-size: 13px; font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: var(--hint); margin-bottom: 6px;
     }
 
     .app-title {
       font-family: 'Barlow Condensed', sans-serif;
-      font-size: 48px;
-      font-weight: 700;
-      color: var(--text);
-      line-height: 1.0;
-      letter-spacing: -.01em;
+      font-size: 48px; font-weight: 700;
+      color: var(--text); line-height: 1.0; letter-spacing: -.01em;
     }
 
-    .app-sub {
-      font-size: 16px;
-      color: var(--muted);
-      margin-top: 8px;
-      line-height: 1.55;
-    }
+    .app-sub { font-size: 16px; color: var(--muted); margin-top: 8px; line-height: 1.55; }
 
     @media (max-width: 600px) {
       .app-title { font-size: 34px; }
@@ -116,25 +95,17 @@
     }
 
     .app-icon {
-      width: 96px;
-      height: 96px;
-      border-radius: 22px;
-      overflow: hidden;
-      flex-shrink: 0;
+      width: 96px; height: 96px; border-radius: 22px;
+      overflow: hidden; flex-shrink: 0;
       border: 1px solid var(--border);
       box-shadow: 0 2px 12px rgba(0,0,0,.13);
     }
-
-    .app-icon img {
-      width: 100%; height: 100%;
-      object-fit: cover; display: block;
-    }
+    .app-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
     @media (max-width: 600px) {
       .app-icon { width: 72px; height: 72px; border-radius: 16px; }
     }
 
-    /* Accent rule */
     .accent-rule {
       height: 3px;
       background: linear-gradient(90deg, var(--orange) 0%, var(--blue) 55%, transparent 100%);
@@ -142,42 +113,28 @@
       margin: 1.5rem 0 2rem;
     }
 
-    /* Form */
     .name-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 1.4rem;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 16px; margin-bottom: 1.4rem;
     }
 
-    @media (max-width: 400px) {
-      .name-row { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 400px) { .name-row { grid-template-columns: 1fr; } }
 
     .field { margin-bottom: 1.4rem; }
 
     label {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 7px;
+      display: block; font-size: 12px; font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 7px;
     }
 
     input[type="text"],
     input[type="email"] {
-      width: 100%;
-      padding: 14px 16px;
-      font-family: 'Barlow', sans-serif;
-      font-size: 17px;
-      color: var(--text);
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      outline: none;
-      transition: border-color .15s, box-shadow .15s;
+      width: 100%; padding: 14px 16px;
+      font-family: 'Barlow', sans-serif; font-size: 17px;
+      color: var(--text); background: var(--bg);
+      border: 1px solid var(--border); border-radius: var(--radius);
+      outline: none; transition: border-color .15s, box-shadow .15s;
       -webkit-appearance: none;
     }
 
@@ -187,97 +144,90 @@
     }
 
     @media (max-width: 600px) {
-      input[type="text"],
-      input[type="email"] {
-        padding: 13px 14px;
-        font-size: 16px;
-      }
+      input[type="text"], input[type="email"] { padding: 13px 14px; font-size: 16px; }
     }
 
-    .hint {
-      font-size: 13px;
-      color: var(--hint);
-      margin-top: 6px;
-      line-height: 1.5;
-    }
+    .hint { font-size: 13px; color: var(--hint); margin-top: 6px; line-height: 1.5; }
 
-    .field-error {
-      font-size: 12px;
-      color: var(--danger);
-      margin-top: 5px;
-      display: none;
-    }
-
-    .field.has-error input    { border-color: var(--danger) !important; }
+    .field-error { font-size: 12px; color: var(--danger); margin-top: 5px; display: none; }
+    .field.has-error input      { border-color: var(--danger) !important; }
     .field.has-error .field-error { display: block; }
-    .field.is-valid input     { border-color: var(--blue); }
+    .field.is-valid input       { border-color: var(--blue); }
 
-    /* Submit */
     .submit-btn {
-      width: 100%;
-      margin-top: 2rem;
-      padding: 16px;
+      width: 100%; margin-top: 2rem; padding: 16px;
       font-family: 'Barlow Condensed', sans-serif;
-      font-size: 18px;
-      font-weight: 700;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: #fff;
-      background: var(--blue);
-      border: none;
-      border-radius: var(--radius);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
+      font-size: 18px; font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: #fff; background: var(--blue);
+      border: none; border-radius: var(--radius); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
       transition: background .15s, transform .1s;
     }
-
-    .submit-btn:hover  { background: var(--blue-dark); }
-    .submit-btn:active { transform: scale(.98); }
+    .submit-btn:hover   { background: var(--blue-dark); }
+    .submit-btn:active  { transform: scale(.98); }
     .submit-btn:disabled { opacity: .5; cursor: not-allowed; }
 
     .status-msg {
-      font-size: 13px;
-      margin-top: 10px;
-      padding: 10px 14px;
-      border-radius: var(--radius);
-      display: none;
+      font-size: 13px; margin-top: 10px;
+      padding: 10px 14px; border-radius: var(--radius); display: none;
     }
     .status-msg.sending { display: block; background: #e8f0fb; color: var(--blue); }
     .status-msg.fail    { display: block; background: #fdecea; color: var(--danger); }
 
-    /* Success */
-    .success-view {
-      display: none;
-      text-align: center;
-      padding: 3rem 1rem 1rem;
+    /* Cross-link to VIN Inspector */
+    .crosslink {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; margin-top: 2.5rem; padding: 1.25rem 1.5rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      text-decoration: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .crosslink:hover {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(26,79,160,.08);
+    }
+    .crosslink-text .crosslink-label {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase;
+      color: var(--hint); margin-bottom: 3px;
+    }
+    .crosslink-text .crosslink-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 22px; font-weight: 700;
+      color: var(--text); line-height: 1.1;
+    }
+    .crosslink-text .crosslink-sub {
+      font-size: 13px; color: var(--muted); margin-top: 3px;
+    }
+    .crosslink-arrow {
+      flex-shrink: 0; width: 40px; height: 40px;
+      background: var(--blue); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .crosslink-arrow svg {
+      width: 18px; height: 18px;
+      stroke: #fff; fill: none; stroke-width: 2.5;
+      stroke-linecap: round; stroke-linejoin: round;
     }
 
+    /* Success */
+    .success-view { display: none; text-align: center; padding: 3rem 1rem 1rem; }
     .success-icon {
-      width: 68px; height: 68px;
-      border-radius: 50%;
+      width: 68px; height: 68px; border-radius: 50%;
       background: var(--blue);
       display: flex; align-items: center; justify-content: center;
       margin: 0 auto 1.25rem;
     }
-
     .success-icon svg {
-      width: 30px; height: 30px;
-      stroke: #fff; fill: none;
-      stroke-width: 2.5;
-      stroke-linecap: round; stroke-linejoin: round;
+      width: 30px; height: 30px; stroke: #fff; fill: none;
+      stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
     }
-
-    .success-name {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-size: 28px; font-weight: 700;
-      color: var(--text);
-      margin-bottom: .6rem;
-    }
-
-    .success-msg   { font-size: 15px; color: var(--muted); line-height: 1.7; }
+    .success-name { font-family: 'Barlow Condensed', sans-serif; font-size: 28px; font-weight: 700; color: var(--text); margin-bottom: .6rem; }
+    .success-msg  { font-size: 15px; color: var(--muted); line-height: 1.7; }
     .success-email { font-size: 13px; color: var(--hint); margin-top: .75rem; font-family: monospace; }
   </style>
 </head>
@@ -323,6 +273,17 @@
       Register as alpha tester
     </button>
     <div class="status-msg" id="status-msg"></div>
+
+    <a href="vin.html" class="crosslink" aria-label="Go to VIN Inspector">
+      <div class="crosslink-text">
+        <div class="crosslink-label">Already have a Grenadier?</div>
+        <div class="crosslink-title">VIN Inspector</div>
+        <div class="crosslink-sub">Validate and decode your vehicle identification number</div>
+      </div>
+      <div class="crosslink-arrow">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
+    </a>
   </div>
 
   <div class="success-view" id="success-view">
@@ -332,12 +293,22 @@
     <p class="success-name" id="success-name"></p>
     <p class="success-msg">You're on the list! Check your inbox for your TestFlight invite and WhatsApp group link.</p>
     <p class="success-email" id="success-email"></p>
+    <a href="vin.html" class="crosslink" style="margin-top:2rem;text-align:left;" aria-label="Go to VIN Inspector">
+      <div class="crosslink-text">
+        <div class="crosslink-label">While you wait</div>
+        <div class="crosslink-title">VIN Inspector</div>
+        <div class="crosslink-sub">Validate and decode your vehicle identification number</div>
+      </div>
+      <div class="crosslink-arrow">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
+    </a>
   </div>
 
 </div>
 
 <script>
-  const WORKER_URL = 'https://log.perlan.net'; // ← replace with your CF Worker URL
+  const WORKER_URL = 'https://log.perlan.net';
 
   function setState(id, state) {
     const f = document.getElementById(id);
@@ -363,20 +334,18 @@
     sm.className = 'status-msg sending';
     sm.textContent = 'Sending…';
 
-    const payload = {
-      message:      'alpha_tester_signup',
-      level:        'info',
-      first_name:   first,
-      last_name:    last,
-      email:        email,
-      submitted_at: new Date().toISOString()
-    };
-
     try {
       const res = await fetch(WORKER_URL, {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify(payload)
+        body:    JSON.stringify({
+          message:      'alpha_tester_signup',
+          level:        'info',
+          first_name:   first,
+          last_name:    last,
+          email:        email,
+          submitted_at: new Date().toISOString()
+        })
       });
       if (!res.ok) throw new Error('HTTP ' + res.status);
     } catch (e) {

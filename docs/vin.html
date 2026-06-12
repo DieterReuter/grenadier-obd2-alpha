@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VIN Inspector – Grenadier OBD2</title>
+  <meta name="description" content="Validate and decode your INEOS Grenadier vehicle identification number.">
+  <link rel="icon" type="image/png" href="assets/AppIcon-1024.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue: #1A4FA0; --blue-dark: #163f82; --orange: #C4601A;
+      --green: #1e7d3a; --green-bg: #edf7f0;
+      --bg: #f7f6f3; --surface: #ffffff; --border: rgba(0,0,0,.10);
+      --text: #1a1917; --muted: #5a5854; --hint: #8a8782;
+      --danger: #c0392b; --danger-bg: #fdecea; --radius: 10px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --green-bg: #0d2e18; --bg: #141311; --surface: #1e1c1a;
+        --border: rgba(255,255,255,.10); --text: #f0ede8;
+        --muted: #a09d98; --hint: #6a6764; --danger-bg: #2a1010;
+      }
+    }
+    body {
+      font-family: 'Barlow', sans-serif; background: var(--bg); color: var(--text);
+      min-height: 100dvh; display: flex; align-items: center; justify-content: center;
+      padding: 2rem 1rem;
+    }
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 18px; padding: 3rem 3.5rem 3.5rem;
+      width: 100%; max-width: 860px; box-shadow: 0 4px 32px rgba(0,0,0,.07);
+    }
+    @media (max-width: 600px) {
+      body { align-items: flex-start; padding: 0; }
+      .card { border-radius: 0; border: none; box-shadow: none; min-height: 100dvh; padding: 2.25rem 1.5rem 2.5rem; max-width: 100%; }
+    }
+    .header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1.5rem; margin-bottom: 1rem; }
+    .eyebrow { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--hint); margin-bottom: 6px; }
+    .app-title { font-family: 'Barlow Condensed', sans-serif; font-size: 48px; font-weight: 700; color: var(--text); line-height: 1.0; letter-spacing: -.01em; }
+    .app-sub { font-size: 16px; color: var(--muted); margin-top: 8px; line-height: 1.55; }
+    @media (max-width: 600px) { .app-title { font-size: 34px; } .app-sub { font-size: 14px; } }
+    .app-icon { width: 96px; height: 96px; border-radius: 22px; overflow: hidden; flex-shrink: 0; border: 1px solid var(--border); box-shadow: 0 2px 12px rgba(0,0,0,.13); }
+    .app-icon img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    @media (max-width: 600px) { .app-icon { width: 72px; height: 72px; border-radius: 16px; } }
+    .accent-rule { height: 3px; background: linear-gradient(90deg, var(--orange) 0%, var(--blue) 55%, transparent 100%); border-radius: 2px; margin: 1.5rem 0 2rem; }
+    .vin-row { display: flex; gap: 10px; margin-bottom: 1rem; }
+    .vin-row input {
+      flex: 1; padding: 14px 16px;
+      font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+      outline: none; transition: border-color .15s, box-shadow .15s; -webkit-appearance: none;
+    }
+    .vin-row input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(26,79,160,.12); }
+    .vin-row input.is-valid { border-color: var(--green); }
+    .vin-row input.is-error { border-color: var(--danger); }
+    .validate-btn {
+      padding: 14px 24px; flex-shrink: 0;
+      font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      color: #fff; background: var(--blue); border: none; border-radius: var(--radius); cursor: pointer;
+      transition: background .15s, transform .1s;
+    }
+    .validate-btn:hover { background: var(--blue-dark); }
+    .validate-btn:active { transform: scale(.98); }
+    @media (max-width: 500px) { .vin-row { flex-direction: column; } .vin-row input { font-size: 18px; letter-spacing: .08em; } .validate-btn { width: 100%; } }
+    .status-bar { font-size: 13px; padding: 10px 14px; border-radius: var(--radius); margin-bottom: 1.5rem; display: none; }
+    .status-bar.ok   { display: block; background: var(--green-bg); color: var(--green); }
+    .status-bar.fail { display: block; background: var(--danger-bg); color: var(--danger); }
+    .decode-section { display: none; }
+    .section-label { font-size: 11px; font-weight: 700; letter-spacing: .10em; text-transform: uppercase; color: var(--hint); margin-bottom: 10px; padding-left: 2px; }
+    .decode-table { width: 100%; border-collapse: collapse; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 1.5rem; }
+    .decode-table thead th { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--hint); background: var(--bg); padding: 9px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+    .decode-table thead th.col-check { text-align: center; width: 52px; }
+    .decode-table thead th.col-fix   { width: 36%; }
+    .decode-table tbody tr { border-bottom: 1px solid var(--border); }
+    .decode-table tbody tr:last-child { border-bottom: none; }
+    .decode-table td { padding: 11px 14px; font-size: 14px; vertical-align: middle; }
+    .td-label { color: var(--muted); white-space: nowrap; }
+    .td-value { font-weight: 500; color: var(--text); }
+    .td-check { text-align: center; }
+    .check-btn {
+      width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--border);
+      background: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+      transition: background .12s, border-color .12s; font-size: 14px; padding: 0;
+    }
+    .check-btn:hover { border-color: var(--blue); }
+    .check-btn.ok      { background: var(--green-bg);  border-color: var(--green);  color: var(--green); }
+    .check-btn.wrong   { background: var(--danger-bg); border-color: var(--danger); color: var(--danger); }
+    .check-btn.neutral { color: var(--hint); }
+    .fix-select {
+      width: 100%; padding: 7px 10px; font-family: 'Barlow', sans-serif; font-size: 13px;
+      color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: 6px;
+      outline: none; cursor: pointer; transition: border-color .15s; -webkit-appearance: none;
+    }
+    .fix-select:focus    { border-color: var(--blue); }
+    .fix-select:disabled { opacity: .3; cursor: not-allowed; }
+    .country-field { margin-bottom: 1.5rem; }
+    .country-field label { display: block; font-size: 11px; font-weight: 700; letter-spacing: .10em; text-transform: uppercase; color: var(--hint); margin-bottom: 8px; }
+    .country-field select {
+      width: 100%; padding: 13px 14px; font-family: 'Barlow', sans-serif; font-size: 15px;
+      color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+      outline: none; -webkit-appearance: none; cursor: pointer; transition: border-color .15s, box-shadow .15s;
+    }
+    .country-field select:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(26,79,160,.12); }
+    .country-hint { font-size: 12px; color: var(--hint); margin-top: 5px; }
+    .comments-field { margin-bottom: 1.5rem; }
+    .comments-field label { display: block; font-size: 11px; font-weight: 700; letter-spacing: .10em; text-transform: uppercase; color: var(--hint); margin-bottom: 8px; }
+    .comments-field textarea {
+      width: 100%; padding: 13px 14px; min-height: 80px; font-family: 'Barlow', sans-serif; font-size: 14px;
+      color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+      outline: none; resize: vertical; line-height: 1.5; transition: border-color .15s, box-shadow .15s;
+    }
+    .comments-field textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(26,79,160,.12); }
+    .actions { display: flex; gap: 12px; margin-bottom: 1rem; }
+    .confirm-btn {
+      flex: 1; padding: 15px; font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      color: #fff; background: var(--green); border: none; border-radius: var(--radius); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px; transition: opacity .15s, transform .1s;
+    }
+    .confirm-btn:disabled { opacity: .35; cursor: not-allowed; }
+    .confirm-btn:not(:disabled):hover  { opacity: .88; }
+    .confirm-btn:not(:disabled):active { transform: scale(.98); }
+    .reset-btn {
+      padding: 15px 20px; font-family: 'Barlow Condensed', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+      color: var(--muted); background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer; transition: border-color .15s;
+    }
+    .reset-btn:hover { border-color: var(--muted); }
+    .submit-status { font-size: 13px; padding: 10px 14px; border-radius: var(--radius); display: none; margin-top: .5rem; }
+    .submit-status.sending { display: block; background: #e8f0fb; color: var(--blue); }
+    .submit-status.ok      { display: block; background: var(--green-bg); color: var(--green); }
+    .submit-status.fail    { display: block; background: var(--danger-bg); color: var(--danger); }
+    .proto-banner { font-size: 13px; padding: 10px 14px; margin-bottom: 1.5rem; border-radius: var(--radius); background: #fff8e6; color: #7a5000; border: 1px solid #f0d070; }
+    @media (prefers-color-scheme: dark) { .proto-banner { background: #2a1e00; color: #e0b040; border-color: #5a4000; } }
+    .crosslink {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      margin-top: 2.5rem; padding: 1.25rem 1.5rem;
+      background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+      text-decoration: none; transition: border-color .15s, box-shadow .15s;
+    }
+    .crosslink:hover { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(26,79,160,.08); }
+    .crosslink-label { font-family: 'Barlow Condensed', sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--hint); margin-bottom: 3px; }
+    .crosslink-title { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700; color: var(--text); line-height: 1.1; }
+    .crosslink-sub   { font-size: 13px; color: var(--muted); margin-top: 3px; }
+    .crosslink-arrow { flex-shrink: 0; width: 40px; height: 40px; background: var(--blue); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .crosslink-arrow svg { width: 18px; height: 18px; stroke: #fff; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+  </style>
+</head>
+<body>
+<div class="card">
+
+  <div class="header">
+    <div>
+      <div class="eyebrow">Ineos Grenadier · OBD2 iOS App</div>
+      <div class="app-title">VIN Inspector</div>
+      <p class="app-sub">Validate and decode your vehicle identification number.</p>
+    </div>
+    <div class="app-icon">
+      <img src="assets/AppIcon-1024.png" alt="Grenadier OBD2 app icon">
+    </div>
+  </div>
+
+  <div class="accent-rule"></div>
+
+  <div class="vin-row">
+    <input type="text" id="vin-input" maxlength="17"
+      placeholder="Enter your 17-character VIN"
+      autocomplete="off" spellcheck="false"
+      oninput="this.value=this.value.toUpperCase().replace(/[^A-HJ-NPR-Z0-9]/g,'')"
+      onkeydown="if(event.key==='Enter')validateVIN()">
+    <button class="validate-btn" onclick="validateVIN()">Validate</button>
+  </div>
+
+  <div class="status-bar" id="status-bar"></div>
+
+  <div class="decode-section" id="decode-section">
+
+    <div id="proto-banner" class="proto-banner" style="display:none"></div>
+
+    <div class="section-label">Decoded fields</div>
+
+    <table class="decode-table">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Decoded value</th>
+          <th class="col-check">&#10003;</th>
+          <th class="col-fix">Correction</th>
+        </tr>
+      </thead>
+      <tbody id="decode-tbody"></tbody>
+    </table>
+
+    <div class="country-field">
+      <label for="country-select">Country <span style="font-weight:400;letter-spacing:0;text-transform:none;color:var(--hint)">— not encoded in VIN</span></label>
+      <select id="country-select"></select>
+      <p class="country-hint">Select the country where this vehicle is registered.</p>
+    </div>
+
+    <div class="comments-field">
+      <label for="comments">Comments</label>
+      <textarea id="comments" placeholder="Any additional details about your vehicle&#8230;"></textarea>
+    </div>
+
+    <div class="actions">
+      <button class="reset-btn" onclick="resetForm()">Clear</button>
+      <button class="confirm-btn" id="confirm-btn" onclick="submitForm()" disabled>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+        Confirm &amp; Save
+      </button>
+    </div>
+    <div class="submit-status" id="submit-status"></div>
+
+  </div>
+
+  <a href="index.html" class="crosslink" aria-label="Go to Alpha Tester Registration">
+    <div>
+      <div class="crosslink-label">Want early access to the app?</div>
+      <div class="crosslink-title">Alpha Testers</div>
+      <div class="crosslink-sub">Sign up for your TestFlight invite and WhatsApp group link</div>
+    </div>
+    <div class="crosslink-arrow">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </div>
+  </a>
+
+</div>
+<script>
+  const WORKER_URL = 'https://log.perlan.net';
+
+  const FIELDS = [
+    { key:'modelYear',     label:'Model Year',     options:['MY23','MY24','MY25','MY26','MY27'] },
+    { key:'bodyStyle',     label:'Body Style',     options:[['station_wagon','Station Wagon'],['quartermaster','Quartermaster']] },
+    { key:'typeOfUse',     label:'Type of Use',    options:[['passenger','Passenger Vehicle'],['utility','Utility Vehicle']] },
+    { key:'engine',        label:'Engine',         options:[['diesel','Diesel (B57D30)'],['petrol','Petrol (B58B30)']] },
+    { key:'drive',         label:'Drive',          options:[['lhd','Left Hand Drive (LHD)'],['rhd','Right Hand Drive (RHD)']] },
+    { key:'assemblyPlant', label:'Assembly Plant', options:[['hambach','Hambach, France'],['graz','Graz, Austria']] },
+  ];
+
+  const DISPLAY = {
+    MY22:'MY22',MY23:'MY23',MY24:'MY24',MY25:'MY25',MY26:'MY26',MY27:'MY27',
+    station_wagon:'Station Wagon',quartermaster:'Quartermaster',
+    passenger:'Passenger Vehicle',utility:'Utility Vehicle',
+    diesel:'Diesel (B57D30)',petrol:'Petrol (B58B30)',
+    lhd:'Left Hand Drive (LHD)',rhd:'Right Hand Drive (RHD)',
+    hambach:'Hambach, France',graz:'Graz, Austria',
+  };
+
+  const COUNTRIES = [
+    ['','— Select country —'],
+    ['AU','Australia'],['AT','Austria'],['BE','Belgium'],['BR','Brazil'],
+    ['CA','Canada'],['CN','China'],['HR','Croatia'],['CZ','Czechia'],
+    ['DK','Denmark'],['FI','Finland'],['FR','France'],['DE','Germany'],
+    ['HK','Hong Kong'],['HU','Hungary'],['IN','India'],['IE','Ireland'],
+    ['IL','Israel'],['IT','Italy'],['JP','Japan'],['KW','Kuwait'],
+    ['LU','Luxembourg'],['MY','Malaysia'],['MT','Malta'],['MX','Mexico'],
+    ['NL','Netherlands'],['NZ','New Zealand'],['NO','Norway'],['OM','Oman'],
+    ['PL','Poland'],['PT','Portugal'],['QA','Qatar'],['RO','Romania'],
+    ['SA','Saudi Arabia'],['SG','Singapore'],['SK','Slovakia'],['SI','Slovenia'],
+    ['ZA','South Africa'],['ES','Spain'],['SE','Sweden'],['CH','Switzerland'],
+    ['TW','Taiwan'],['TH','Thailand'],['AE','UAE'],['GB','United Kingdom'],['US','United States'],
+  ];
+
+  let decoded={}, checks={}, overrides={};
+
+  function buildCountrySelect() {
+    const sel = document.getElementById('country-select');
+    COUNTRIES.forEach(function(c) {
+      const o = document.createElement('option');
+      o.value = c[0]; o.textContent = c[1]; sel.appendChild(o);
+    });
+    // Country not pre-selected — user must choose consciously
+    sel.addEventListener('change', markDirty);
+  }
+
+  function markDirty() {
+    document.getElementById('confirm-btn').disabled = false;
+  }
+
+  async function validateVIN() {
+    const vin = document.getElementById('vin-input').value.trim();
+    const bar = document.getElementById('status-bar');
+    const inp = document.getElementById('vin-input');
+    bar.className = 'status-bar'; bar.style.display = 'block';
+    bar.textContent = 'Validating\u2026';
+    let data;
+    try {
+      const res = await fetch(WORKER_URL + '/vin/decode', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({vin:vin})
+      });
+      data = await res.json();
+    } catch(e) {
+      bar.className = 'status-bar fail';
+      bar.textContent = 'Network error \u2014 please try again.';
+      inp.classList.remove('is-valid','is-error');
+      return;
+    }
+    if (!data.valid) {
+      bar.className = 'status-bar fail';
+      bar.textContent = '\u2717 ' + data.error;
+      inp.classList.remove('is-valid'); inp.classList.add('is-error');
+      document.getElementById('decode-section').style.display = 'none';
+      return;
+    }
+    bar.className = 'status-bar ok';
+    bar.textContent = '\u2713 Valid VIN \u00b7 INEOS Grenadier';
+    inp.classList.remove('is-error'); inp.classList.add('is-valid');
+    decoded = data.decoded; checks = {}; overrides = {};
+    document.getElementById('confirm-btn').disabled = true;
+    var banner = document.getElementById('proto-banner');
+    if (data.isPrototype) {
+      banner.style.display = 'block';
+      banner.textContent = '\u26a0 Prototype vehicle detected' + (data.prototypeBatch ? ' \u2014 ' + data.prototypeBatch : '');
+    } else { banner.style.display = 'none'; }
+    renderRows();
+    document.getElementById('decode-section').style.display = 'block';
+  }
+
+  function renderRows() {
+    const tbody = document.getElementById('decode-tbody');
+    tbody.innerHTML = '';
+    FIELDS.forEach(function(f) {
+      const raw   = decoded[f.key] || '\u2014';
+      const label = DISPLAY[raw] || raw;
+      const state = checks[f.key];
+      const ovr   = overrides[f.key] || '';
+      const tr = document.createElement('tr');
+      var td;
+      td = document.createElement('td'); td.className='td-label'; td.textContent=f.label; tr.appendChild(td);
+      td = document.createElement('td'); td.className='td-value'; td.textContent=label; tr.appendChild(td);
+      td = document.createElement('td'); td.className='td-check';
+      const btn = document.createElement('button');
+      btn.className = 'check-btn ' + (state===true?'ok':state===false?'wrong':'neutral');
+      btn.setAttribute('aria-label','Toggle check for '+f.label);
+      btn.textContent = state===true?'\u2713':state===false?'\u2717':'\u25cb';
+      btn.addEventListener('click', function(){toggleCheck(f.key);});
+      td.appendChild(btn); tr.appendChild(td);
+      td = document.createElement('td');
+      const sel = document.createElement('select');
+      sel.className='fix-select'; sel.disabled=(state!==false);
+      var bo=document.createElement('option'); bo.value=''; bo.textContent='\u2014 select \u2014'; sel.appendChild(bo);
+      f.options.forEach(function(opt) {
+        const o=document.createElement('option');
+        if(Array.isArray(opt)){o.value=opt[0];o.textContent=opt[1];}else{o.value=opt;o.textContent=DISPLAY[opt]||opt;}
+        if(o.value===ovr)o.selected=true;
+        sel.appendChild(o);
+      });
+      sel.addEventListener('change',function(){overrides[f.key]=sel.value;markDirty();});
+      td.appendChild(sel); tr.appendChild(td);
+      tbody.appendChild(tr);
+    });
+  }
+
+  function toggleCheck(key) {
+    var cur=checks[key];
+    if(cur===undefined)checks[key]=true;
+    else if(cur===true)checks[key]=false;
+    else{checks[key]=undefined;overrides[key]='';}
+    markDirty(); renderRows();
+  }
+
+  async function submitForm() {
+    const vin      = document.getElementById('vin-input').value.trim();
+    const country  = document.getElementById('country-select').value;
+    const comments = document.getElementById('comments').value.trim();
+    const ss  = document.getElementById('submit-status');
+    const btn = document.getElementById('confirm-btn');
+    btn.disabled=true; ss.className='submit-status sending'; ss.textContent='Saving\u2026';
+    var confirmed={}, corrections={};
+    FIELDS.forEach(function(f){
+      if(checks[f.key]===true)confirmed[f.key]=true;
+      if(checks[f.key]===false){confirmed[f.key]=false;if(overrides[f.key])corrections[f.key]=overrides[f.key];}
+    });
+    const payload = {
+      vin:vin,
+      modelYear:     overrides.modelYear     || decoded.modelYear,
+      bodyStyle:     overrides.bodyStyle     || decoded.bodyStyle,
+      typeOfUse:     overrides.typeOfUse     || decoded.typeOfUse,
+      engine:        overrides.engine        || decoded.engine,
+      drive:         overrides.drive         || decoded.drive,
+      assemblyPlant: overrides.assemblyPlant || decoded.assemblyPlant,
+      country:country, comments:comments, confirmed:confirmed, corrections:corrections,
+    };
+    try {
+      const res = await fetch(WORKER_URL+'/vin/submit',{
+        method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if(!data.ok)throw new Error();
+    } catch(e) {
+      ss.className='submit-status fail'; ss.textContent='Something went wrong \u2014 please try again.';
+      btn.disabled=false; return;
+    }
+    ss.className='submit-status ok'; ss.textContent='\u2713 Saved \u2014 thank you!';
+  }
+
+  function resetForm() {
+    document.getElementById('vin-input').value='';
+    document.getElementById('vin-input').classList.remove('is-valid','is-error');
+    var bar=document.getElementById('status-bar'); bar.className='status-bar'; bar.style.display='none';
+    document.getElementById('decode-section').style.display='none';
+    document.getElementById('submit-status').className='submit-status';
+    document.getElementById('comments').value='';
+    document.getElementById('country-select').value='';
+    decoded={}; checks={}; overrides={};
+    document.getElementById('confirm-btn').disabled=true;
+  }
+
+  buildCountrySelect();
+</script>
+</body>
+</html>
